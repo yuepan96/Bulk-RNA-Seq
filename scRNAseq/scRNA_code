@@ -1,0 +1,270 @@
+library(Seurat)
+library(ggplot2)
+library(sctransform)
+
+#### LOADING DATA ####
+
+WT_rep1.data <- Read10X(EO771_scRNA_seq/WT_rep1/")
+WT_rep1 <- CreateSeuratObject(counts = WT_rep1.data, min.cells = 3,  project = "WT_rep1")
+WT_rep2.data <- Read10X(EO771_scRNA_seq/WT_rep2/")
+WT_rep2 <- CreateSeuratObject(counts = WT_rep2.data, min.cells = 3,  project = "WT_rep2")
+WT_rep3.data <- Read10X(EO771_scRNA_seq/WT_rep3/")
+WT_rep3 <- CreateSeuratObject(counts = WT_rep3.data, min.cells = 3,  project = "WT_rep3")
+WT_rep4.data <- Read10X(EO771_scRNA_seq/WT_rep4/")
+WT_rep4 <- CreateSeuratObject(counts = WT_rep4.data, min.cells = 3,  project = "WT_rep4")
+
+WT_aMARCO_rep1.data <- Read10X(EO771_scRNA_seq/WT_aMARCO_rep1/")
+WT_aMARCO_rep1 <- CreateSeuratObject(WT_aMARCO_rep1.data, min.cells = 3,  project = "WT_aMARCO_rep1")
+WT_aMARCO_rep2.data <- Read10X(EO771_scRNA_seq/WT_aMARCO_rep2/")
+WT_aMARCO_rep2 <- CreateSeuratObject(WT_aMARCO_rep2.data, min.cells = 3,  project = "WT_aMARCO_rep2")
+WT_aMARCO_rep3.data <- Read10X(EO771_scRNA_seq/WT_aMARCO_rep3/")
+WT_aMARCO_rep3 <- CreateSeuratObject(WT_aMARCO_rep3.data, min.cells = 3,  project = "WT_aMARCO_rep3")
+WT_aMARCO_rep4.data <- Read10X(EO771_scRNA_seq/WT_aMARCO_rep4/")
+WT_aMARCO_rep4 <- CreateSeuratObject(WT_aMARCO_rep4.data, min.cells = 3,  project = "WT_aMARCO_rep4")
+
+Unc93b1_rep1.data <- Read10X(EO771_scRNA_seq/Unc93b1_rep1/")
+Unc93b1_rep1 <- CreateSeuratObject(Unc93b1_rep1.data, min.cells = 3,  project = "Unc93b1_rep1")
+Unc93b1_rep2.data <- Read10X(EO771_scRNA_seq/Unc93b1_rep2/")
+Unc93b1_rep2 <- CreateSeuratObject(Unc93b1_rep2.data, min.cells = 3,  project = "Unc93b1_rep2")
+Unc93b1_rep3.data <- Read10X(EO771_scRNA_seq/Unc93b1_rep3/")
+Unc93b1_rep3 <- CreateSeuratObject(Unc93b1_rep3.data, min.cells = 3,  project = "Unc93b1_rep3")
+Unc93b1_rep4.data <- Read10X(EO771_scRNA_seq/Unc93b1_rep4/")
+Unc93b1_rep4 <- CreateSeuratObject(Unc93b1_rep4.data, min.cells = 3,  project = "Unc93b1_rep4")
+
+Unc93b1_aMARCO_rep1.data <- Read10X(EO771_scRNA_seq/Unc93b1_aMARCO_rep1/")
+Unc93b1_aMARCO_rep1 <- CreateSeuratObject(Unc93b1_aMARCO_rep1.data, min.cells = 3,  project = "Unc93b1_aMARCO_rep1")
+Unc93b1_aMARCO_rep2.data <- Read10X(EO771_scRNA_seq/Unc93b1_aMARCO_rep2/")
+Unc93b1_aMARCO_rep2 <- CreateSeuratObject(Unc93b1_aMARCO_rep2.data, min.cells = 3,  project = "Unc93b1_aMARCO_rep2")
+Unc93b1_aMARCO_rep3.data <- Read10X(EO771_scRNA_seq/Unc93b1_aMARCO_rep3/")
+Unc93b1_aMARCO_rep3 <- CreateSeuratObject(Unc93b1_aMARCO_rep3.data, min.cells = 3,  project = "Unc93b1_aMARCO_rep3")
+Unc93b1_aMARCO_rep4.data <- Read10X(EO771_scRNA_seq/Unc93b1_aMARCO_rep4/")
+Unc93b1_aMARCO_rep4 <- CreateSeuratObject(Unc93b1_aMARCO_rep4.data, min.cells = 3,  project = "Unc93b1_aMARCO_rep4")
+
+WT <- merge(WT_rep1, y = list(WT_rep2, WT_rep3, WT_rep4), add.cell.ids = c("WT_1","WT_2","WT_3","WT_4"), project = "WT")
+WT_aMARCO <- merge(WT_aMARCO_rep1, y = list(WT_aMARCO_rep2, WT_aMARCO_rep3, WT_aMARCO_rep4), add.cell.ids = c("WT_aMARCO_1","WT_aMARCO_2","WT_aMARCO_3","WT_aMARCO_4"), project = "WT_aMARCO")
+Unc93b1 <- merge(Unc93b1_rep1, y = list(Unc93b1_rep2, Unc93b1_rep3, Unc93b1_rep4),  add.cell.ids = c("Unc93b1_1","Unc93b1_2","Unc93b1_3","Unc93b1_4"), project = "Unc93b1")
+Unc93b1_aMARCO <- merge(Unc93b1_aMARCO_rep1, y = list(Unc93b1_aMARCO_rep2, Unc93b1_aMARCO_rep3, Unc93b1_aMARCO_rep4), add.cell.ids = c("Unc93b1_aMARCO_1","Unc93b1_aMARCO_2","Unc93b1_aMARCO_3","Unc93b1_aMARCO_4"), project = "Unc93b1_aMARCO")
+EO771.all <- merge( WT, y = list(WT_aMARCO, Unc93b1, Unc93b1_aMARCO), project = "EO771_scRNA" )
+
+EO771.all$group <- NA
+EO771.all$group[grep("^WT_rep", EO771.all$orig.ident)] <- "WT"
+EO771.all$group[grep("^WT_aMARCO", EO771.all$orig.ident)] <- "WT_aMARCO"
+EO771.all$group[grep("^Unc93b1_rep", EO771.all$orig.ident)] <- "Unc93b1"
+EO771.all$group[grep("^Unc93b1_aMARCO", EO771.all$orig.ident)] <- "Unc93b1_aMARCO"
+
+EO771.all$group <- factor(
+  EO771.all$group,
+  levels = c("WT", "WT_aMARCO", "Unc93b1", "Unc93b1_aMARCO")
+)
+
+#### PRE-PROCESSING ####
+
+ctm <- "^CT010467|^AY036118|^Gm42418"
+EO771.all[["percent.mt"]] <- PercentageFeatureSet(EO771.all, pattern = "^mt-")
+EO771.all[["percent.rb"]] <- PercentageFeatureSet(EO771.all, pattern = "^Rp[sl]")
+EO771.all[["percent.hb"]] <- PercentageFeatureSet(EO771.all, pattern = "^Hb.*-")
+EO771.all[["percent.ct"]] <- PercentageFeatureSet(EO771.all, pattern = ctm )
+
+EO771.filter <- subset(EO771.all, subset = percent.mt < 30 & nCount_RNA > 200 & nFeature_RNA > 200)
+
+remove <- read_tsv("EO771_scRNA_seq/mm10_genes.tsv") %>%
+  filter(gene_biotype %in% c("TR_V_pseudogene", "TR_J_pseudogene",
+                             "IG_V_pseudogene", "IG_C_pseudogene",
+                             "antisense", "lincRNA")) %>%.$gene_name
+ctm <- "^CT010467|^AY036118|^Gm42418|*GFP"
+rownames(EO771.filter)[grep("^mt-", rownames(EO771.filter))];
+rownames(EO771.filter)[grep("^Rp[sl]", rownames(EO771.filter))];
+rownames(EO771.filter)[grep("^Hb.*-", rownames(EO771.filter))];
+rownames(EO771.filter)[grep( ctm , rownames(EO771.filter))];
+rownames(EO771.filter) %in% remove %>% sum()
+EO771.filter <- EO771.filter[!grepl("^mt-", rownames(EO771.filter)), ] %>%
+  .[!grepl("^Rp[sl]", rownames(.)), ] %>%
+  .[!grepl("^Hb.*-", rownames(.)), ] %>%
+  .[!grepl( ctm , rownames(.)), ] %>%
+  .[setdiff(rownames(.),remove), ]
+
+EO771.filter <- EO771.filter[unname(which(rowSums(GetAssayData(EO771.filter)) >= 3)),]
+EO771.filter <- EO771.filter[unname(which(rowSums(GetAssayData(EO771.filter) > 0) >= 
+                                            length(colnames(EO771.filter))*5e-3)),]
+
+#### ALL CELLS ####
+
+S.genes <- hs2mm(cc.genes.updated.2019[[1]])
+G2M.genes <- hs2mm(cc.genes.updated.2019[[2]])
+
+EO771.filter <- CellCycleScoring(EO771.filter, s.features = S.genes, 
+                                 g2m.features = G2M.genes)
+EO771.filter@meta.data$Phase <- factor(EO771.filter@meta.data$Phase, 
+                                       levels = c("G1","S","G2M"))
+
+EO771.filter <- SCTransform(EO771.filter, conserve.memory = TRUE, vars.to.regress = c("S.Score", "G2M.Score"), verbose = TRUE)
+
+EO771.filter <- RunPCA(EO771.filter)
+EO771.filter <- RunUMAP(EO771.filter, reduction = "pca", dims = 1:30)
+EO771.filter <- FindNeighbors(EO771.filter, dims = 1:30, reduction = "pca")
+EO771.filter <- FindClusters(EO771.filter, resolution = 0.08, cluster.name = "unintegrated_clusters_0.08")
+EO771.filter <- RunUMAP(EO771.filter, dims = 1:30, reduction = "pca", reduction.name = "umap.unintegrated")
+DimPlot(EO771.filter, reduction = "umap.unintegrated")
+
+#### MONONUCLEAR PHAGOCYTES ####
+
+selected_clusters <- c(0)
+MonoPhag <- subset(EO771.filter, subset = seurat_clusters %in% selected_clusters)
+MonoPhag <- SCTransform(MonoPhag, conserve.memory = TRUE, verbose = TRUE)
+MonoPhag <- RunPCA(MonoPhag)
+MonoPhag <- FindNeighbors(MonoPhag, dims = 1:30, reduction = "pca")
+MonoPhag <- FindClusters(MonoPhag, resolution = 0.15, cluster.name = "mnp")
+MonoPhag <- RunUMAP(MonoPhag, dims = 1:30, reduction = "pca", reduction.name = "mnp")
+
+#### PROGENy ####
+
+library(decoupleR)
+library(tibble)
+library(pheatmap)
+new.cluster.ids <- c("H2-Ab1+", "Spp1+", "Ly6c2+", "Isg15+", "Cd80/Cd86+", "Mki67+")
+names(new.cluster.ids) <- levels(MonoPhag)
+MonoPhag <- RenameIdents(MonoPhag, new.cluster.ids)
+
+net <- decoupleR::get_progeny(organism = "Mouse", top = 500)
+MonoPhag_expr_mat <- as.matrix(GetAssayData(MonoPhag, assay = "SCT", slot = "data"))
+MonoPhag_act <- run_ulm(
+  mat    = MonoPhag_expr_mat,
+  net    = net,
+  .source = "source",
+  .target = "target",
+  .mor    = "weight",
+  minsize = 5
+)
+
+pathway_mat <- MonoPhag_act %>%pivot_wider(id_cols = source,names_from = condition,values_from = score) %>% column_to_rownames("source") %>% as.matrix()
+
+MonoPhag[["PROGENy"]] <- CreateAssayObject(data = pathway_mat)
+
+progeny_df <- MonoPhag_act %>% left_join(data.frame(condition = colnames(MonoPhag),cluster = Idents(MonoPhag), group  = MonoPhag$group), by = "condition")
+progeny_cgp <- progeny_df %>% group_by(cluster, group, source) %>% summarise( score = mean(score, na.rm = TRUE), .groups = "drop")
+clusters <- unique(progeny_cgp$cluster)
+hm_colors <- colorRampPalette( c("darkblue", "whitesmoke", "darkred"))(100)
+hm_breaks <- c( seq(-3, 0, length.out = ceiling(100/2) + 1), seq(0.05, 3, length.out = floor(100/2)))
+pathway_order <- c("PI3K","MAPK","JAK-STAT","NFkB","TNFa","Androgen","p53","EGFR","TGFb", "WNT","Trail","Hypoxia","Estrogen","VEGF")
+for (cl in clusters) {
+  mat <- progeny_cgp %>%
+    dplyr::filter(cluster == cl) %>%
+    tidyr::pivot_wider(
+      id_cols = group,
+      names_from = source,
+      values_from = score
+    ) %>%
+    tibble::column_to_rownames("group") %>%
+    as.matrix()
+  mat <- mat[, intersect(pathway_order, colnames(mat)), drop = FALSE]
+  p <- pheatmap::pheatmap(
+    mat,
+    scale = "column",
+    cluster_rows = FALSE,
+    cluster_cols = FALSE, 
+    color  = hm_colors,  
+    breaks = hm_breaks, 
+    main = paste("Cluster", cl)
+  )
+  
+  print(p)
+}
+
+#### Scupa ####
+###Prepare UCEs using python###
+
+cluster_col <- "seurat_clusters"
+group_col   <- "group"
+score_cols  <- paste0("Mac.", letters[1:5], "_score")
+group_levels <- c("WT", "WT_aMARCO", "Unc93b1", "Unc93b1_aMARCO")
+
+make_cluster_heatmap <- function(cluster_keep, use_row_z = TRUE){
+  df_c <- MonoPhag@meta.data |>
+    dplyr::mutate(
+      cluster = as.character(.data[[cluster_col]]),
+      group   = factor(.data[[group_col]], levels = group_levels)
+    ) |>
+    dplyr::filter(cluster == cluster_keep, !is.na(group)) |>
+    dplyr::group_by(group) |>
+    dplyr::summarise(dplyr::across(dplyr::all_of(score_cols), ~mean(.x, na.rm = TRUE)),
+                     .groups = "drop") |>
+    dplyr::arrange(group)
+  
+  mat <- df_c |>
+    tibble::column_to_rownames("group") |>
+    as.matrix() |>
+    t()
+  
+  if (use_row_z) {
+    mat <- t(scale(t(mat)))
+    mat[is.na(mat)] <- 0
+    legend_name <- "row_z"
+    col_fun <- circlize::colorRamp2(c(-2, 0, 2), c("darkblue", "whitesmoke", "darkred"))
+  } else {
+    legend_name <- "mean"
+    q <- quantile(mat, probs = c(0.02, 0.5, 0.98), na.rm = TRUE)
+    col_fun <- circlize::colorRamp2(c(q[1], q[2], q[3]), c("darkblue", "whitesmoke", "darkred"))
+  }
+  
+  ComplexHeatmap::Heatmap(
+    mat,
+    name = legend_name,
+    col = col_fun,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = TRUE,
+    show_column_names = TRUE,
+    column_names_rot = 45,
+    row_names_side = "right",
+    column_title = paste0("Cluster ", cluster_keep, " (group comparison)"),
+    heatmap_legend_param = list(title = legend_name)
+  )
+}
+
+clusters <- levels(MonoPhag@meta.data[[cluster_col]])
+ht_list <- lapply(clusters, function(cl) make_cluster_heatmap(cl, use_row_z = TRUE))
+ht_list[[6]]
+for (ht in ht_list) ComplexHeatmap::draw(ht)
+
+#### TUMOR-INFILTRATING LYMPHOCYTE (TIL) ###
+selected_clusters <- c(2, 4)
+TILs <- subset(EO771.filter, subset = seurat_clusters %in% selected_clusters)
+TILs <- SCTransform(TILs, conserve.memory = TRUE, verbose = TRUE)
+TILs <- FindNeighbors(TILs, dims = 1:30, reduction = "pca")
+TILs <- FindClusters(TILs, resolution = 0.1, cluster.name = "til")
+TILs <- FindClusters(TILs, resolution = 0.13, cluster.name = "til")
+TILs <- RunUMAP(TILs, dims = 1:30, reduction = "pca", reduction.name = "til")
+
+#### CELLCHAT #####
+
+seu.combined <- merge(
+  TILs,
+  y = MonoPhag,
+  add.cell.ids = c("TIL", "Mac"),
+  project = "TIL_Mac_CellChat"
+)
+
+DefaultAssay(seu.combined) <- "RNA"
+seu.combined <- NormalizeData(seu.combined)
+seu.combined$cellchat_type <- Idents(seu.combined)
+data.input <- GetAssayData(seu.combined, assay = "RNA", slot = "data")
+
+meta <- data.frame(
+  celltype = seu.combined$cellchat_type,
+  row.names = colnames(seu.combined)
+)
+
+cellchat <- createCellChat(
+  object = data.input,
+  meta = meta,
+  group.by = "celltype"
+)
+
+cellchat@DB <- CellChatDB.mouse
+cellchat <- subsetData(cellchat)
+cellchat <- identifyOverExpressedGenes(cellchat)
+cellchat <- identifyOverExpressedInteractions(cellchat)
+cellchat <- computeCommunProb(cellchat, population.size = TRUE)
+cellchat <- filterCommunication(cellchat, min.cells = 10)
+cellchat <- computeCommunProbPathway(cellchat)
+cellchat <- aggregateNet(cellchat)
